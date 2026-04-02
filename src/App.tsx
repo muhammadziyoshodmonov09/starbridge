@@ -52,7 +52,7 @@ const CodeBlock = ({ code, title }: { code: string, title?: string }) => {
   );
 };
 
-const TelegramButton = () => (
+const FloatingTelegramButton = () => (
   <>
     <style>{`
       @keyframes soft-float {
@@ -63,19 +63,45 @@ const TelegramButton = () => (
         animation: soft-float 3s ease-in-out infinite;
       }
     `}</style>
-    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 group animate-soft-float">
-      <div className="hidden sm:block text-sm text-gray-400 bg-[#111] border border-gray-800 px-3 py-1.5 rounded-full shadow-lg opacity-0 translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
-        Created by <span className="text-white font-medium">@Muhammadziyo_dev</span>
+    <div className="fixed bottom-6 right-6 z-[100] flex items-center gap-3 group animate-soft-float">
+      {/* Desktop Tooltip */}
+      <div className="hidden sm:block opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
+        <div className="bg-[#1C1C1E] border border-gray-800 text-sm text-gray-400 px-4 py-2 rounded-2xl shadow-xl whitespace-nowrap">
+          Created by <span className="text-white font-medium">@Muhammadziyo_dev</span>
+        </div>
       </div>
+      
+      {/* Main Circular Button */}
       <a
         href="https://t.me/Muhammadziyo_dev"
         target="_blank"
         rel="noopener noreferrer"
-        className="relative flex items-center justify-center w-14 h-14 bg-[#24A1DE] text-white rounded-full shadow-[0_0_15px_rgba(36,161,222,0.4)] group-hover:shadow-[0_0_25px_rgba(36,161,222,0.6)] group-hover:scale-110 transition-all duration-500"
-        title="Developer: @Muhammadziyo_dev"
+        className="relative flex items-center justify-center w-[60px] h-[60px] bg-[#24A1DE] text-white rounded-full 
+                   shadow-[0_8px_20px_rgba(36,161,222,0.3)] hover:shadow-[0_10px_25px_rgba(36,161,222,0.5)] 
+                   transition-all duration-300 hover:scale-[1.08] active:scale-95 cursor-pointer"
+        aria-label="Contact Developer on Telegram"
       >
-        <svg className="w-7 h-7 ml-[-2px] mt-[2px]" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.25-5.61 3.67-.53.36-1.01.53-1.44.52-.47-.01-1.38-.26-2.06-.48-.83-.27-1.49-.42-1.43-.89.03-.22.29-.45.79-.69 3.08-1.33 5.14-2.22 6.18-2.65 2.95-1.23 3.56-1.44 3.96-1.45.09 0 .28.02.39.11.09.08.12.19.13.29.01.07.01.16 0 .25z"/>
+        {/* Unread Red Notification Badge */}
+        <span className="absolute -top-1 -right-1 flex h-[18px] w-[18px]">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF3B30] opacity-60 duration-1000"></span>
+          <span className="relative inline-flex rounded-full h-[18px] w-[18px] bg-[#FF3B30] border-2 border-[#111]"></span>
+        </span>
+
+        {/* Improved Telegram Paper Plane Logo */}
+        <svg 
+          width="32" 
+          height="32" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+          className="ml-[-2px] mt-[1px]"
+        >
+          <path 
+            fillRule="evenodd" 
+            clipRule="evenodd" 
+            d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12ZM12.43 8.85893C11.2628 9.3444 8.93014 10.3492 5.43181 11.8733C4.86383 12.0992 4.56626 12.3202 4.53911 12.5363C4.49273 12.9056 4.95408 13.0489 5.57864 13.2452C5.66442 13.2721 5.75385 13.3001 5.8456 13.3315C6.44473 13.5358 7.23438 13.7842 7.6433 13.7925C8.01428 13.7999 8.4287 13.6471 8.88632 13.3338C12.0121 11.2227 13.6481 10.1472 13.7944 10.1073C13.8988 10.0788 14.0416 10.043 14.1378 10.129C14.234 10.215 14.2245 10.3752 14.2144 10.418L14.2132 10.4229C14.1537 10.669 11.6669 12.9841 10.3667 14.1952C9.96195 14.5721 9.6804 14.8344 9.62024 14.8967C9.35626 15.1702 9.0792 15.4215 9.34969 15.7029C9.60533 15.9689 10.4116 16.5029 11.458 17.1958C11.6441 17.3191 11.8413 17.4497 12.0366 17.5794C12.9157 18.1632 13.6599 18.6575 14.3168 18.5997C14.6973 18.5661 15.0691 18.2127 15.2631 17.1683C15.7237 14.6865 16.6346 9.3242 16.8523 7.15181C16.8711 6.96347 16.883 6.75704 16.8906 6.55986C16.8986 6.35338 16.9038 6.13609 16.8222 5.95543C16.7441 5.78255 16.5925 5.6703 16.4253 5.62675C16.0368 5.52554 15.3403 5.72898 12.43 8.85893Z" 
+            fill="currentColor"
+          />
         </svg>
       </a>
     </div>
@@ -210,7 +236,7 @@ export default function App() {
   return (
     <div className="min-h-screen font-sans selection:bg-blue-500/30">
       {activeView === 'home' ? renderHome() : renderDocs()}
-      <TelegramButton />
+      <FloatingTelegramButton />
     </div>
   );
 }
