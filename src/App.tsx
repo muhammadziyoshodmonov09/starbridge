@@ -52,6 +52,36 @@ const CodeBlock = ({ code, title }: { code: string, title?: string }) => {
   );
 };
 
+const TelegramButton = () => (
+  <>
+    <style>{`
+      @keyframes soft-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+      .animate-soft-float {
+        animation: soft-float 3s ease-in-out infinite;
+      }
+    `}</style>
+    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 group animate-soft-float">
+      <div className="hidden sm:block text-sm text-gray-400 bg-[#111] border border-gray-800 px-3 py-1.5 rounded-full shadow-lg opacity-0 translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+        Created by <span className="text-white font-medium">@Muhammadziyo_dev</span>
+      </div>
+      <a
+        href="https://t.me/Muhammadziyo_dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative flex items-center justify-center w-14 h-14 bg-[#24A1DE] text-white rounded-full shadow-[0_0_15px_rgba(36,161,222,0.4)] group-hover:shadow-[0_0_25px_rgba(36,161,222,0.6)] group-hover:scale-110 transition-all duration-500"
+        title="Developer: @Muhammadziyo_dev"
+      >
+        <svg className="w-7 h-7 ml-[-2px] mt-[2px]" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.25-5.61 3.67-.53.36-1.01.53-1.44.52-.47-.01-1.38-.26-2.06-.48-.83-.27-1.49-.42-1.43-.89.03-.22.29-.45.79-.69 3.08-1.33 5.14-2.22 6.18-2.65 2.95-1.23 3.56-1.44 3.96-1.45.09 0 .28.02.39.11.09.08.12.19.13.29.01.07.01.16 0 .25z"/>
+        </svg>
+      </a>
+    </div>
+  </>
+);
+
 export default function App() {
   const [activeView, setActiveView] = useState<ServiceId>('home');
 
@@ -180,6 +210,7 @@ export default function App() {
   return (
     <div className="min-h-screen font-sans selection:bg-blue-500/30">
       {activeView === 'home' ? renderHome() : renderDocs()}
+      <TelegramButton />
     </div>
   );
 }
