@@ -1,6 +1,7 @@
 import { sendPremiumOrder } from '../../lib/api/providerService.js';
 import { buildSuccessResponse, buildErrorResponse } from '../../lib/api/responseBuilder.js';
 import { mapProviderError } from '../../lib/api/errorMapper.js';
+import { createPendingTransaction, completeTransaction } from '../../lib/api/transactionService.js';
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
@@ -28,12 +29,27 @@ export default async function handler(req, res) {
     payload.order_id = order_id;
   }
 
+  // 1. Create pending transaction in database
+  const txId = await createPendingTransaction({
+    service: 'premium',
+    username,
+    duration,
+    order_id
+  });
+
   // Safely forward to the upstream provider via environment variables mapping
   const result = await sendPremiumOrder(payload);
 
   if (result.success) {
     const returnedOrderId = result.data?.order_id || order_id || null;
+    // Map upstream success properties
     const cost = result.data?.cost || null; 
+
+    // Update database log
+    await completeTransaction(txId, {
+      status: 'success',
+      ton_cost: cost
+    });
 
     // Formulate our clean normalized response
     const finalData = {
@@ -50,6 +66,14 @@ export default async function handler(req, res) {
   } else {
     // Graceful error mapping
     const mappedErr = mapProviderError(result.data, "premium");
+    
+    // Update database log indicating failure
+    await completeTransaction(txId, {
+      status: 'failed',
+      provider_error_code: mappedErr.errorCode,
+      provider_message: mappedErr.message
+    });
+    
     return res.status(mappedErr.status).json(buildErrorResponse("premium", mappedErr.errorCode, mappedErr.message));
   }
 }

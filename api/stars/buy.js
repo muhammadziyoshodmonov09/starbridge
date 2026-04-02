@@ -1,6 +1,7 @@
 import { sendStarsOrder } from '../../lib/api/providerService.js';
 import { buildSuccessResponse, buildErrorResponse } from '../../lib/api/responseBuilder.js';
 import { mapProviderError } from '../../lib/api/errorMapper.js';
+import { createPendingTransaction, completeTransaction } from '../../lib/api/transactionService.js';
 
 export default async function handler(req, res) {
   // Allow OPTIONS method for CORS if needed, but primarily strict POST
@@ -32,13 +33,28 @@ export default async function handler(req, res) {
     payload.order_id = order_id;
   }
 
+  // 1. Create pending transaction in database
+  const txId = await createPendingTransaction({
+    service: 'stars',
+    username,
+    amount,
+    order_id
+  });
+
   // Hide the upstream call inside the backend
   const result = await sendStarsOrder(payload);
 
   if (result.success) {
     // Map upstream success properties gracefully so we never crash if provider omits fields
     const returnedOrderId = result.data?.order_id || order_id || null;
+    // Make sure we remove nulls internally before sending but save raw costs
     const cost = result.data?.cost || null; 
+
+    // Update database log
+    await completeTransaction(txId, {
+      status: 'success',
+      ton_cost: cost
+    });
 
     // Format the clean data we return back to our frontend
     const finalData = {
@@ -55,6 +71,14 @@ export default async function handler(req, res) {
   } else {
     // If the provider fails, normalize their error so we don't leak anything dangerous
     const mappedErr = mapProviderError(result.data, "stars");
+    
+    // Update database log indicating failure
+    await completeTransaction(txId, {
+      status: 'failed',
+      provider_error_code: mappedErr.errorCode,
+      provider_message: mappedErr.message
+    });
+    
     return res.status(mappedErr.status).json(buildErrorResponse("stars", mappedErr.errorCode, mappedErr.message));
   }
 }
