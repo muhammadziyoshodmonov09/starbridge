@@ -59,7 +59,7 @@ export default function AdminPanel() {
         const params = new URLSearchParams();
         if (filterService !== 'all') params.append('service', filterService);
         if (filterStatus !== 'all') params.append('status', filterStatus);
-        params.append('limit', filterLimit);
+        if (filterLimit !== 'all') params.append('limit', filterLimit);
 
         const txRes = await fetch(`/api/admin/transactions?${params.toString()}`, { 
           headers: { 'x-admin-key': adminKey } 
@@ -315,6 +315,7 @@ export default function AdminPanel() {
               <option value="25">25 Rows</option>
               <option value="50">50 Rows</option>
               <option value="100">100 Rows</option>
+              <option value="all">All</option>
             </select>
           </div>
 
